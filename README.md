@@ -25,20 +25,29 @@ Demo login: `demo@example.com` / `AteraDemo2026!`
 ```
 src/
   components/
-    ui/        shadcn-vue primitives
+    ui/        shadcn-vue primitives (82 files, 17 groups)
+    charts/    ECharts wrappers
+    dashboard/ dashboard widgets
     shared/    DataTable, PageHeader, StatCard, EmptyState, ConfirmDialog, RecordDialog, Toaster
-  composables/ useToast
+  composables/ useToast, useChartColors
   i18n/        en / de / fr messages
   layouts/     AuthLayout, ProtectedLayout (sidebar + header shell)
   lib/
-    data/      typed in-memory mock modules (orders, products, users)
+    data/      typed in-memory mock modules (21 domains)
     auth.ts    localStorage session
     navigation.ts
-  pages/       Login, SignUp, Dashboard, Orders, Products, Users, Docs
+  pages/       57 route screens (dashboard, ERP, commerce, apps, settings, auth, legal, errors)
   router/      routes + auth guard
   services/    thin typed service per domain (backend swap point)
   stores/      auth, preferences (appearance, color, density, container, language)
 ```
+
+## What's included
+
+- 64 routes across 5 navigation groups: overview (dashboard, analytics, ecommerce, CRM, pipeline, SaaS, finance, marketing, project management, charts), enterprise (assets, procurement, inventory, suppliers, HR), commerce (orders, POS, products, customers, invoices, billing, pricing), apps (mail, chat, files, kanban, calendar, wizard, forms, AI chat, editor, maps, widgets), system (profile, users, notifications, settings, support, search)
+- Auth flow with a demo account, plus forgot/reset password, two-factor, verify email and lock screen
+- Legal, 404/403/500, coming soon and maintenance pages
+- Full CRUD on orders, products, users, customers, invoices, assets and suppliers with validated dialogs and toasts
 
 ## Data flow
 

@@ -3,17 +3,38 @@ import { RouterLink } from 'vue-router'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const services = [
+  'asset-service',
+  'calendar-service',
+  'crm-service',
+  'customer-service',
+  'editor-document-service',
+  'file-service',
+  'finance-service',
+  'hr-service',
+  'inventory-service',
+  'invoice-service',
+  'kanban-service',
+  'mail-service',
+  'notification-service',
   'order-service',
+  'pos-service',
+  'procurement-service',
   'product-service',
+  'profile-service',
+  'supplier-service',
   'user-service',
 ]
 
 const folders = [
-  ['src/pages', 'Route screens (Vue SFCs)'],
+  ['src/pages', 'Route screens (Vue SFCs), grouped by navigation area'],
   ['src/layouts', 'Protected and auth shells'],
   ['src/components/ui', 'shadcn-vue primitives (reka-ui)'],
-  ['src/components/shared', 'DataTable, StatCard, PageHeader, EmptyState, ConfirmDialog'],
+  ['src/components/shared', 'DataTable, StatCard, PageHeader, EmptyState, ConfirmDialog, RecordDialog, Toaster'],
+  ['src/components/charts', 'ECharts wrappers (area, bar, line, pie, radar, radial, scatter, treemap, composed)'],
+  ['src/components/dashboard', 'Dashboard widgets (metrics, overview chart, traffic, goals, activity, recent orders)'],
+  ['src/composables', 'useToast, useChartColors'],
   ['src/lib/data', 'Typed in-memory mock modules'],
+  ['src/lib/navigation.ts', 'Sidebar tree: 5 groups, 38 items'],
   ['src/services', 'Thin typed service layer over the mock data'],
   ['src/stores', 'Pinia stores (auth, preferences)'],
   ['src/i18n', 'vue-i18n dictionary (en/de/fr)'],
@@ -114,7 +135,24 @@ export const orderService: OrderService = {
               <dt class="font-mono text-xs">ConfirmDialog</dt>
               <dd class="text-sm text-muted-foreground">Destructive confirmation with v-model:open.</dd>
             </div>
+            <div class="grid gap-1 py-2 sm:grid-cols-[180px_1fr]">
+              <dt class="font-mono text-xs">RecordDialog</dt>
+              <dd class="text-sm text-muted-foreground">Create and edit form built from a field list, validated with vee-validate and zod.</dd>
+            </div>
+            <div class="grid gap-1 py-2 sm:grid-cols-[180px_1fr]">
+              <dt class="font-mono text-xs">Toaster</dt>
+              <dd class="text-sm text-muted-foreground">Stack of toasts fed by the useToast composable.</dd>
+            </div>
           </dl>
+          <h2 class="text-lg font-medium">Charts</h2>
+          <p class="text-sm leading-relaxed text-muted-foreground">
+            Chart wrappers in <span class="font-mono text-xs">src/components/charts</span> render
+            ECharts through vue-echarts. Colors are read from the theme tokens
+            (<span class="font-mono text-xs">--chart-1</span> to
+            <span class="font-mono text-xs">--chart-5</span>) with
+            <span class="font-mono text-xs">useChartColors()</span>, so charts follow the active
+            color preset and dark mode.
+          </p>
           <p class="text-sm text-muted-foreground">
             Base primitives live in <span class="font-mono text-xs">src/components/ui</span> and are
             built on reka-ui (the shadcn-vue port of Radix).
@@ -155,7 +193,7 @@ t('orders') // "Orders"</code></pre>
             <li>Create a page in <span class="font-mono text-xs">src/pages</span> using PageHeader and DataTable.</li>
             <li>Register the route in <span class="font-mono text-xs">src/router/index.ts</span>.</li>
             <li>Add a navigation entry in <span class="font-mono text-xs">src/lib/navigation.ts</span>.</li>
-            <li>Add translation keys to all three locales.</li>
+            <li>Add translation keys to all three locales in <span class="font-mono text-xs">src/i18n/index.ts</span>.</li>
             <li>Run <span class="font-mono text-xs">bun run build</span>.</li>
           </ol>
         </TabsContent>
