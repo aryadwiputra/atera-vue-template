@@ -148,6 +148,19 @@ export type FileItem = {
   owner: string
 }
 
+export type TransactionStatus = 'Cleared' | 'Pending'
+export type TransactionType = 'Income' | 'Expense'
+
+export type FinanceTransaction = {
+  id: string
+  date: string
+  description: string
+  category: string
+  type: TransactionType
+  amount: number
+  status: TransactionStatus
+}
+
 export type DealStage = 'new' | 'contacted' | 'qualified' | 'won' | 'lost'
 
 export type Deal = {
