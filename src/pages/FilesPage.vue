@@ -31,7 +31,7 @@ const filtered = computed(() => {
 })
 
 function sizeLabel(file: FileItem) {
-  return file.size ?? 'Folder'
+  return file.size ?? t('folder')
 }
 
 let uploadTimer: number | undefined
@@ -56,18 +56,18 @@ function simulateUpload() {
   <div class="flex flex-col gap-6">
     <PageHeader
       :title="t('files')"
-      description="Organize documents and shared resources."
+      :description="t('filesDescription')"
       :breadcrumbs="[{ title: t('dashboard'), href: '/dashboard' }, { title: t('files'), href: '/files' }]"
     >
       <template #actions>
-        <span v-if="uploaded" class="text-xs text-muted-foreground">File uploaded.</span>
+        <span v-if="uploaded" class="text-xs text-muted-foreground">{{ t('uploadComplete') }}</span>
         <Button size="sm" variant="outline" :disabled="uploading" @click="simulateUpload">
           <Upload class="size-4" />
-          {{ uploading ? 'Uploading...' : 'Upload' }}
+          {{ uploading ? t('uploading') : t('upload') }}
         </Button>
         <Button size="sm">
           <Plus class="size-4" />
-          New folder
+          {{ t('newFolder') }}
         </Button>
       </template>
     </PageHeader>
@@ -78,13 +78,13 @@ function simulateUpload() {
         <Input
           v-model="search"
           class="border-0 bg-transparent p-0 shadow-none focus-visible:ring-0"
-          placeholder="Search files..."
+          :placeholder="t('searchFiles')"
         />
       </div>
       <div class="flex rounded-md border p-0.5">
         <button
           type="button"
-          aria-label="Grid view"
+          :aria-label="t('gridView')"
           :class="cn('rounded p-1.5', view === 'grid' ? 'bg-muted text-foreground' : 'text-muted-foreground')"
           @click="view = 'grid'"
         >
@@ -92,7 +92,7 @@ function simulateUpload() {
         </button>
         <button
           type="button"
-          aria-label="List view"
+          :aria-label="t('listView')"
           :class="cn('rounded p-1.5', view === 'list' ? 'bg-muted text-foreground' : 'text-muted-foreground')"
           @click="view = 'list'"
         >
@@ -106,7 +106,7 @@ function simulateUpload() {
         <CardContent class="flex flex-col gap-3 p-5">
           <div class="flex items-center justify-between">
             <component :is="typeIcons[file.type]" class="size-8 text-muted-foreground" />
-            <Button variant="ghost" size="icon" aria-label="More">
+            <Button variant="ghost" size="icon" :aria-label="t('more')">
               <MoreHorizontal class="size-4" />
             </Button>
           </div>

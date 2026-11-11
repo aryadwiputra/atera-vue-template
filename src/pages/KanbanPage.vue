@@ -19,11 +19,11 @@ const priorityColor = {
   low: 'bg-muted/50 text-muted-foreground',
 } as const
 
-const priorityLabel = {
-  high: 'High',
-  medium: 'Medium',
-  low: 'Low',
-} as const
+function priorityLabel(priority: KanbanTask['priority']) {
+  if (priority === 'high') return t('highPriority')
+  if (priority === 'medium') return t('mediumPriority')
+  return t('lowPriority')
+}
 
 function columnTasks(columnId: string) {
   return tasks.value.filter((task) => task.columnId === columnId)
@@ -39,13 +39,13 @@ function move(taskId: string, columnId: string) {
   <div class="flex flex-col gap-6">
     <PageHeader
       :title="t('kanban')"
-      description="Plan work and keep the team moving."
+      :description="t('kanbanDescription')"
       :breadcrumbs="[{ title: t('dashboard'), href: '/dashboard' }, { title: t('kanban'), href: '/kanban' }]"
     >
       <template #actions>
         <Button size="sm">
           <Plus class="size-4" />
-          Add task
+          {{ t('addTask') }}
         </Button>
       </template>
     </PageHeader>
@@ -66,7 +66,7 @@ function move(taskId: string, columnId: string) {
               <div class="flex items-start justify-between gap-2">
                 <p class="text-sm font-medium leading-snug">{{ task.title }}</p>
                 <Badge variant="outline" :class="cn('shrink-0 text-2xs', priorityColor[task.priority])">
-                  {{ priorityLabel[task.priority] }}
+                  {{ priorityLabel(task.priority) }}
                 </Badge>
               </div>
               <p class="mt-2 text-xs text-muted-foreground">{{ task.assignee }}</p>
@@ -87,7 +87,7 @@ function move(taskId: string, columnId: string) {
               v-if="columnTasks(column.id).length === 0"
               class="rounded-lg border border-dashed p-6 text-center text-xs text-muted-foreground"
             >
-              Drag cards here
+              {{ t('dragHere') }}
             </div>
           </div>
         </CardContent>

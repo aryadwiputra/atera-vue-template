@@ -47,14 +47,14 @@ function submit() {
 
 <template>
   <div class="flex flex-col gap-6">
-    <PageHeader :title="t('chat')" description="Stay connected with your team." />
+    <PageHeader :title="t('chat')" :description="t('chatDescription')" />
 
     <Card>
       <div class="grid min-h-[560px] md:grid-cols-[220px_minmax(0,1fr)]">
         <aside class="flex flex-col border-b bg-muted/20 md:border-r md:border-b-0">
           <div class="mb-3 flex items-center justify-between px-4 py-3">
-            <span class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Channels</span>
-            <Button variant="ghost" size="icon-sm" aria-label="Add channel">
+            <span class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">{{ t('channels') }}</span>
+            <Button variant="ghost" size="icon-sm" :aria-label="t('addChannel')">
               <Plus class="size-4" />
             </Button>
           </div>
@@ -84,7 +84,7 @@ function submit() {
             </div>
             <div>
               <h2 class="font-semibold">{{ channel }}</h2>
-              <p class="text-xs text-muted-foreground">Team conversation</p>
+              <p class="text-xs text-muted-foreground">{{ t('teamConversation') }}</p>
             </div>
           </header>
 
@@ -98,7 +98,7 @@ function submit() {
               <div>
                 <div class="flex items-baseline gap-2">
                   <span class="text-sm font-medium">{{ senders[index % senders.length] }}</span>
-                  <Badge variant="secondary">Now</Badge>
+                  <Badge variant="secondary">{{ t('now') }}</Badge>
                 </div>
                 <p class="mt-1 text-sm text-muted-foreground">{{ item }}</p>
               </div>
@@ -107,7 +107,7 @@ function submit() {
 
           <form class="flex gap-2 border-t p-4" @submit.prevent="submit">
             <Input v-model="message" :placeholder="`#${channel.toLowerCase()}`" />
-            <Button type="submit" size="icon" aria-label="Send">
+            <Button type="submit" size="icon" :aria-label="t('send')">
               <Send class="size-4" />
             </Button>
           </form>

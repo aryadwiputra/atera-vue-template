@@ -49,6 +49,10 @@ const router = createRouter({
         },
         { path: 'hr', name: 'hr', component: () => import('@/pages/HRPage.vue') },
         { path: 'mail', name: 'mail', component: () => import('@/pages/MailPage.vue') },
+        { path: 'chat', name: 'chat', component: () => import('@/pages/ChatPage.vue') },
+        { path: 'files', name: 'files', component: () => import('@/pages/FilesPage.vue') },
+        { path: 'kanban', name: 'kanban', component: () => import('@/pages/KanbanPage.vue') },
+        { path: 'calendar', name: 'calendar', component: () => import('@/pages/CalendarPage.vue') },
       ],
     },
     {

@@ -68,11 +68,11 @@ function goToday() {
 
 <template>
   <div class="flex flex-col gap-6">
-    <PageHeader :title="t('calendar')" description="Keep track of meetings and important milestones.">
+    <PageHeader :title="t('calendar')" :description="t('calendarDescription')">
       <template #actions>
         <Button size="sm">
           <Plus class="size-4" />
-          New event
+          {{ t('newEvent') }}
         </Button>
       </template>
     </PageHeader>
@@ -85,13 +85,13 @@ function goToday() {
             {{ format(currentMonth, { month: 'long', year: 'numeric' }) }}
           </CardTitle>
           <div class="flex gap-1">
-            <Button variant="outline" size="icon" class="size-8" aria-label="Previous month" @click="prevMonth">
+            <Button variant="outline" size="icon" class="size-8" :aria-label="t('prevMonth')" @click="prevMonth">
               <ChevronLeft class="size-4" />
             </Button>
             <Button variant="outline" size="sm" class="h-8" @click="goToday">
-              Today
+              {{ t('today') }}
             </Button>
-            <Button variant="outline" size="icon" class="size-8" aria-label="Next month" @click="nextMonth">
+            <Button variant="outline" size="icon" class="size-8" :aria-label="t('nextMonth')" @click="nextMonth">
               <ChevronRight class="size-4" />
             </Button>
           </div>
@@ -133,7 +133,7 @@ function goToday() {
           <CardTitle>{{ format(selectedDate, { weekday: 'long', month: 'long', day: 'numeric' }) }}</CardTitle>
         </CardHeader>
         <CardContent class="flex flex-col gap-3">
-          <p v-if="selectedEvents.length === 0" class="text-sm text-muted-foreground">No events on this day.</p>
+          <p v-if="selectedEvents.length === 0" class="text-sm text-muted-foreground">{{ t('noEvents') }}</p>
           <div
             v-for="event in selectedEvents"
             :key="event.id"
