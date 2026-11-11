@@ -127,6 +127,13 @@ const footerColumns = [
       { label: 'Sign up', href: '/sign-up' },
     ],
   },
+  {
+    title: 'Legal',
+    links: [
+      { label: 'Terms', href: '/terms' },
+      { label: 'Privacy', href: '/privacy' },
+    ],
+  },
 ]
 
 const showcaseItems = [
@@ -557,7 +564,7 @@ onUnmounted(() => {
     </section>
 
     <footer class="border-t bg-muted/40">
-      <div class="mx-auto grid w-full max-w-6xl gap-10 px-6 py-14 md:grid-cols-[1.5fr_1fr_1fr]">
+      <div class="mx-auto grid w-full max-w-6xl gap-10 px-6 py-14 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
         <div>
           <RouterLink to="/" aria-label="Atera home" class="inline-flex items-center">
             <div class="flex items-center">
