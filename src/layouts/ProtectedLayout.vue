@@ -99,7 +99,11 @@ function signOut() {
       </header>
 
       <main class="flex-1 p-4 md:p-6">
-        <RouterView />
+        <RouterView v-slot="{ Component }">
+          <Transition name="page-fade" mode="out-in">
+            <component :is="Component" :key="route.path" />
+          </Transition>
+        </RouterView>
       </main>
     </div>
 

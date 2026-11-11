@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import { RouterView, useRoute } from 'vue-router'
 import { Moon, Sun } from '@lucide/vue'
 import { Button } from '@/components/ui/button'
 import { usePreferencesStore } from '@/stores/preferences'
 
 const prefs = usePreferencesStore()
+const route = useRoute()
 </script>
 
 <template>
@@ -30,7 +31,11 @@ const prefs = usePreferencesStore()
       </div>
       <div class="flex flex-1 items-center justify-center p-6 sm:p-10">
         <div class="w-full max-w-sm">
-          <RouterView />
+          <RouterView v-slot="{ Component }">
+            <Transition name="page-fade" mode="out-in">
+              <component :is="Component" :key="route.path" />
+            </Transition>
+          </RouterView>
         </div>
       </div>
     </div>
