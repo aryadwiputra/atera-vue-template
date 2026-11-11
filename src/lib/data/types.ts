@@ -48,6 +48,17 @@ export interface Customer {
   joined: string
 }
 
+export type InvoiceStatus = 'Paid' | 'Pending' | 'Overdue'
+
+export interface Invoice {
+  id: string
+  customer: string
+  date: string
+  dueDate: string
+  amount: number
+  status: InvoiceStatus
+}
+
 export type UserStatus = 'Active' | 'Inactive' | 'Suspended'
 export type UserRole = 'Admin' | 'Editor' | 'Moderator' | 'Viewer'
 
