@@ -6,6 +6,7 @@ import AuthLayout from '@/layouts/AuthLayout.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
+    { path: '/', name: 'home', component: () => import('@/pages/HomePage.vue') },
     {
       path: '/',
       component: AuthLayout,
