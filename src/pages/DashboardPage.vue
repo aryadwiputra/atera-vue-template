@@ -1,16 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
 import StatCard from '@/components/shared/StatCard.vue'
+import OverviewChart from '@/components/dashboard/OverviewChart.vue'
+import TrafficSources from '@/components/dashboard/TrafficSources.vue'
+import RecentOrders from '@/components/dashboard/RecentOrders.vue'
+import GoalsCard from '@/components/dashboard/GoalsCard.vue'
+import ActivityCard from '@/components/dashboard/ActivityCard.vue'
 import { orderService } from '@/services/order-service'
 import { productService } from '@/services/product-service'
 import { userService } from '@/services/user-service'
@@ -29,11 +24,15 @@ const paidOrders = computed(() => orders.filter((order) => order.status === 'Pai
 const activeUsers = computed(() => users.filter((user) => user.status === 'Active').length)
 const activeProducts = computed(() => products.filter((p) => p.status === 'Active').length)
 
-const recent = computed(() => orders.slice(0, 5))
-
-function statusVariant(status: string) {
-  return status === 'Paid' ? 'default' : status === 'Refunded' ? 'destructive' : 'secondary'
-}
+const recentOrders = computed(() =>
+  orders.map((order) => ({
+    customer: order.customer,
+    id: '#' + order.id,
+    product: order.product,
+    status: order.status,
+    amount: '$' + order.amount.toFixed(2),
+  })),
+)
 </script>
 
 <template>
@@ -52,37 +51,17 @@ function statusVariant(status: string) {
       <StatCard :title="t('products')" :value="activeProducts" change="+1" :description="t('vsLastMonth')" />
     </section>
 
-    <section class="rounded-xl border">
-      <div class="flex items-center justify-between border-b px-4 py-3">
-        <h2 class="text-sm font-medium">{{ t('recentOrders') }}</h2>
-        <Button as="router-link" to="/orders" variant="ghost" size="sm">
-          {{ t('orders') }}
-        </Button>
+    <section class="grid gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(300px,1fr)]">
+      <OverviewChart />
+      <TrafficSources />
+    </section>
+
+    <section class="grid gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(300px,1fr)]">
+      <RecentOrders :orders="recentOrders" />
+      <div class="flex flex-col gap-4">
+        <GoalsCard />
+        <ActivityCard />
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>{{ t('orderId') }}</TableHead>
-            <TableHead>{{ t('customer') }}</TableHead>
-            <TableHead>{{ t('product') }}</TableHead>
-            <TableHead>{{ t('status') }}</TableHead>
-            <TableHead class="text-right">{{ t('amount') }}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow v-for="order in recent" :key="order.id">
-            <TableCell class="font-mono text-xs">{{ order.id }}</TableCell>
-            <TableCell>{{ order.customer }}</TableCell>
-            <TableCell class="text-muted-foreground">{{ order.product }}</TableCell>
-            <TableCell>
-              <Badge :variant="statusVariant(order.status)">{{ order.status }}</Badge>
-            </TableCell>
-            <TableCell class="text-right font-mono tabular-nums">
-              ${{ order.amount.toLocaleString('en-US') }}
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
     </section>
   </div>
 </template>
