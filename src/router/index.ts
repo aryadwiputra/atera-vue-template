@@ -32,6 +32,7 @@ const router = createRouter({
         { path: 'users', name: 'users', component: () => import('@/pages/UsersPage.vue') },
         { path: 'customers', name: 'customers', component: () => import('@/pages/CustomersPage.vue') },
         { path: 'invoices', name: 'invoices', component: () => import('@/pages/InvoicesPage.vue') },
+        { path: 'billing', name: 'billing', component: () => import('@/pages/BillingPage.vue') },
         { path: 'analytics', name: 'analytics', component: () => import('@/pages/AnalyticsPage.vue') },
         { path: 'charts', name: 'charts', component: () => import('@/pages/ChartsPage.vue') },
         { path: 'assets', name: 'assets', component: () => import('@/pages/AssetsPage.vue') },
