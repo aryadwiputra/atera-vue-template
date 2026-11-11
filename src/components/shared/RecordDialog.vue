@@ -98,7 +98,7 @@ const onSubmit = handleSubmit((formValues) => {
 
 <template>
   <Dialog v-model:open="open">
-    <DialogContent>
+    <DialogContent class="max-h-[calc(100svh-3rem)] overflow-y-auto sm:max-w-md">
       <DialogHeader>
         <DialogTitle>{{ title }}</DialogTitle>
         <DialogDescription v-if="description">{{ description }}</DialogDescription>
