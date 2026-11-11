@@ -128,6 +128,21 @@ export const translations = {
     decrease: 'Decrease',
     remove: 'Remove',
 
+    // Customers
+    customersDescription: 'Manage customer accounts and their activity',
+    newCustomer: 'New customer',
+    company: 'Company',
+    filterCustomers: 'Filter customers',
+    totalCustomers: 'Total customers',
+    totalSpent: 'Total spent',
+    joined: 'Joined',
+    deleteCustomer: 'Delete customer',
+    deleteCustomerDescription: 'This action cannot be undone.',
+    customerDeleted: 'Customer deleted',
+    customerCreated: 'Customer created',
+    editCustomer: 'Edit customer',
+    customerUpdated: 'Customer updated',
+
     // Products
     productsDescription: 'Manage your product catalog',
     newProduct: 'New product',
@@ -490,6 +505,21 @@ export const translations = {
     decrease: 'Verringern',
     remove: 'Entfernen',
 
+    // Customers
+    customersDescription: 'Kundenkonten und deren Aktivität verwalten',
+    newCustomer: 'Neuer Kunde',
+    company: 'Unternehmen',
+    filterCustomers: 'Kunden filtern',
+    totalCustomers: 'Kunden gesamt',
+    totalSpent: 'Gesamtausgaben',
+    joined: 'Beigetreten',
+    deleteCustomer: 'Kunde löschen',
+    deleteCustomerDescription: 'Diese Aktion kann nicht rückgängig gemacht werden.',
+    customerDeleted: 'Kunde gelöscht',
+    customerCreated: 'Kunde erstellt',
+    editCustomer: 'Kunde bearbeiten',
+    customerUpdated: 'Kunde aktualisiert',
+
     productsDescription: 'Ihren Produktkatalog verwalten',
     newProduct: 'Neues Produkt',
     productName: 'Name',
@@ -847,6 +877,21 @@ export const translations = {
     increase: 'Augmenter',
     decrease: 'Diminuer',
     remove: 'Retirer',
+
+    // Customers
+    customersDescription: 'Gérez les comptes clients et leur activité',
+    newCustomer: 'Nouveau client',
+    company: 'Entreprise',
+    filterCustomers: 'Filtrer les clients',
+    totalCustomers: 'Clients au total',
+    totalSpent: 'Total dépensé',
+    joined: 'Inscrit le',
+    deleteCustomer: 'Supprimer le client',
+    deleteCustomerDescription: 'Cette action est irréversible.',
+    customerDeleted: 'Client supprimé',
+    customerCreated: 'Client créé',
+    editCustomer: 'Modifier le client',
+    customerUpdated: 'Client mis à jour',
 
     productsDescription: 'Gérez votre catalogue de produits',
     newProduct: 'Nouveau produit',

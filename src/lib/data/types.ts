@@ -38,6 +38,16 @@ export interface Product {
   sales: number
 }
 
+export interface Customer {
+  id: string
+  name: string
+  email: string
+  company: string
+  orders: number
+  spent: number
+  joined: string
+}
+
 export type UserStatus = 'Active' | 'Inactive' | 'Suspended'
 export type UserRole = 'Admin' | 'Editor' | 'Moderator' | 'Viewer'
 
