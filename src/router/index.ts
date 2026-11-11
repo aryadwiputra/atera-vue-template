@@ -14,6 +14,25 @@ const router = createRouter({
         { path: 'login', name: 'login', component: () => import('@/pages/LoginPage.vue') },
         { path: 'sign-in', redirect: '/login' },
         { path: 'sign-up', name: 'sign-up', component: () => import('@/pages/SignUpPage.vue') },
+        {
+          path: 'forgot-password',
+          name: 'forgot-password',
+          component: () => import('@/pages/ForgotPasswordPage.vue'),
+        },
+        {
+          path: 'reset-password',
+          name: 'reset-password',
+          component: () => import('@/pages/ResetPasswordPage.vue'),
+        },
+        { path: 'two-factor', name: 'two-factor', component: () => import('@/pages/TwoFactorPage.vue') },
+        {
+          path: 'verify-email',
+          name: 'verify-email',
+          component: () => import('@/pages/VerifyEmailPage.vue'),
+        },
+        { path: 'lock-screen', name: 'lock-screen', component: () => import('@/pages/LockScreenPage.vue') },
+        { path: 'login-v2', name: 'login-v2', component: () => import('@/pages/LoginV2Page.vue') },
+        { path: 'register-v2', name: 'register-v2', component: () => import('@/pages/RegisterV2Page.vue') },
       ],
     },
     {
@@ -81,6 +100,21 @@ const router = createRouter({
           name: 'settings-appearance',
           component: () => import('@/pages/SettingsAppearancePage.vue'),
         },
+        {
+          path: 'settings/profile',
+          name: 'settings-profile',
+          component: () => import('@/pages/SettingsProfilePage.vue'),
+        },
+        {
+          path: 'settings/notifications',
+          name: 'settings-notifications',
+          component: () => import('@/pages/SettingsNotificationsPage.vue'),
+        },
+        {
+          path: 'settings/billing',
+          name: 'settings-billing',
+          component: () => import('@/pages/SettingsBillingPage.vue'),
+        },
         { path: 'support', name: 'support', component: () => import('@/pages/SupportPage.vue') },
         { path: 'search', name: 'search', component: () => import('@/pages/SearchPage.vue') },
       ],
@@ -91,8 +125,34 @@ const router = createRouter({
       component: () => import('@/pages/DocsPage.vue'),
     },
     {
+      path: '/terms',
+      name: 'terms',
+      component: () => import('@/pages/LegalPage.vue'),
+      meta: { legal: 'terms' },
+    },
+    {
+      path: '/privacy',
+      name: 'privacy',
+      component: () => import('@/pages/LegalPage.vue'),
+      meta: { legal: 'privacy' },
+    },
+    { path: '/403', name: 'forbidden', component: () => import('@/pages/errors/ForbiddenPage.vue') },
+    { path: '/404', name: 'not-found', component: () => import('@/pages/errors/NotFoundPage.vue') },
+    { path: '/500', name: 'server-error', component: () => import('@/pages/errors/ServerErrorPage.vue') },
+    {
+      path: '/coming-soon',
+      name: 'coming-soon',
+      component: () => import('@/pages/errors/ComingSoonPage.vue'),
+    },
+    {
+      path: '/maintenance',
+      name: 'maintenance',
+      component: () => import('@/pages/errors/MaintenancePage.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
-      redirect: '/dashboard',
+      name: 'catch-all',
+      component: () => import('@/pages/errors/NotFoundPage.vue'),
     },
   ],
 })
