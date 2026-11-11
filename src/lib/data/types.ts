@@ -147,3 +147,16 @@ export type FileItem = {
   updated: string
   owner: string
 }
+
+export type DealStage = 'new' | 'contacted' | 'qualified' | 'won' | 'lost'
+
+export type Deal = {
+  id: string
+  company: string
+  contact: string
+  email: string
+  value: number
+  stage: DealStage
+  owner: string
+  createdAt: string
+}
