@@ -28,8 +28,8 @@ const navLinks = [
 ]
 
 const metrics = [
-  { value: '15', label: 'shadcn UI components' },
-  { value: '55+', label: 'ready app routes' },
+  { value: '82', label: 'shadcn-vue components' },
+  { value: '64', label: 'ready app routes' },
   { value: '3', label: 'languages included' },
   { value: '5', label: 'theme color presets' },
 ]
@@ -57,11 +57,11 @@ const features: { icon: Component; title: string; description: string }[] = [
     icon: MessageSquare,
     title: 'Type safe from the start',
     description:
-      'TypeScript throughout the library, 37 typed data modules, route tables that error before they break.',
+      'TypeScript throughout the library, 21 typed data modules, route tables that error before they break.',
   },
   {
     icon: FolderOpen,
-    title: '15 shadcn style components',
+    title: '82 shadcn-vue components',
     description:
       'Button, dialog, dropdown, sheet, command, tooltip, sidebar and more. Swap one of them into your own design.',
   },
@@ -325,7 +325,7 @@ onUnmounted(() => {
           v-reveal
           class="text-4xl font-semibold tracking-tight text-balance opacity-0 translate-y-4 transition duration-700 sm:text-5xl"
         >
-          A React dashboard template for developers
+          A Vue dashboard template for developers
         </h1>
         <p
           v-reveal="0.08"
@@ -528,7 +528,7 @@ onUnmounted(() => {
             Your next admin panel starts here
           </h2>
           <p class="max-w-[520px] text-pretty opacity-80">
-            Start with prebuilt admin pages, typed sample data, and theme controls in one React
+            Start with prebuilt admin pages, typed sample data, and theme controls in one Vue
             project.
           </p>
           <div class="flex flex-col items-center gap-3 sm:flex-row">
@@ -592,7 +592,7 @@ onUnmounted(() => {
             </div>
           </RouterLink>
           <p class="mt-4 max-w-xs text-sm text-pretty text-muted-foreground">
-            A React admin dashboard template with every page already built.
+            A Vue admin dashboard template with every page already built.
           </p>
         </div>
         <nav v-for="column in footerColumns" :key="column.title" :aria-label="column.title">
