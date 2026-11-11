@@ -32,9 +32,22 @@ const router = createRouter({
         { path: 'analytics', name: 'analytics', component: () => import('@/pages/AnalyticsPage.vue') },
         { path: 'charts', name: 'charts', component: () => import('@/pages/ChartsPage.vue') },
         { path: 'assets', name: 'assets', component: () => import('@/pages/AssetsPage.vue') },
-        { path: 'procurement', name: 'procurement', component: () => import('@/pages/ProcurementPage.vue') },
-        { path: 'inventory', name: 'inventory', component: () => import('@/pages/InventoryPage.vue') },
-        { path: 'suppliers', name: 'suppliers', component: () => import('@/pages/SuppliersPage.vue') },
+        {
+          path: 'procurement',
+          name: 'procurement',
+          component: () => import('@/pages/ProcurementPage.vue'),
+        },
+        {
+          path: 'inventory',
+          name: 'inventory',
+          component: () => import('@/pages/InventoryPage.vue'),
+        },
+        {
+          path: 'suppliers',
+          name: 'suppliers',
+          component: () => import('@/pages/SuppliersPage.vue'),
+        },
+        { path: 'hr', name: 'hr', component: () => import('@/pages/HRPage.vue') },
       ],
     },
     {
