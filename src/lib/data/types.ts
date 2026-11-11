@@ -117,3 +117,12 @@ export type OpenPosition = {
   applicants: number
   postedAt: string
 }
+
+export type FileItem = {
+  id: string
+  name: string
+  type: 'folder' | 'document' | 'spreadsheet' | 'image'
+  size?: string
+  updated: string
+  owner: string
+}
