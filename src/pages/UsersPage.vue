@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { Plus, Trash2 } from '@lucide/vue'
+import { Plus, Pencil, Trash2 } from '@lucide/vue'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import PageHeader from '@/components/shared/PageHeader.vue'
@@ -19,8 +19,10 @@ const { toast } = useToast()
 const rows = ref<User[]>(userService.list())
 const pendingDelete = ref<User | null>(null)
 const createOpen = ref(false)
+const editOpen = ref(false)
+const editing = ref<User | null>(null)
 
-const createFields = computed<RecordField[]>(() => [
+const fields = computed<RecordField[]>(() => [
   { key: 'name', label: t('name') },
   { key: 'email', label: t('email'), type: 'email' },
   { key: 'role', label: t('role'), type: 'select', options: ['Admin', 'Editor', 'Moderator', 'Viewer'] },
@@ -38,6 +40,37 @@ function createUser(values: Record<string, string>) {
   })
   rows.value = userService.list()
   toast({ title: t('userCreated'), variant: 'success' })
+}
+
+const editInitial = computed<Record<string, string>>(() =>
+  editing.value
+    ? {
+        name: editing.value.name,
+        email: editing.value.email,
+        role: editing.value.role,
+        department: editing.value.department,
+        status: editing.value.status,
+      }
+    : ({} as Record<string, string>),
+)
+
+function requestEdit(row: Record<string, unknown>) {
+  editing.value = row as unknown as User
+  editOpen.value = true
+}
+
+function updateUser(values: Record<string, string>) {
+  if (!editing.value) return
+  userService.update(editing.value.id, {
+    name: values.name,
+    email: values.email,
+    role: values.role as UserRole,
+    department: values.department,
+    status: values.status as UserStatus,
+  })
+  rows.value = userService.list()
+  editing.value = null
+  toast({ title: t('userUpdated'), variant: 'success' })
 }
 
 const columns = computed<DataTableColumn[]>(() => [
@@ -94,9 +127,14 @@ function confirmDelete() {
           <span class="text-muted-foreground">{{ row.lastActive }}</span>
         </template>
         <template v-else-if="column.key === 'actions'">
-          <Button variant="ghost" size="icon" :aria-label="t('delete')" @click="requestDelete(row)">
-            <Trash2 class="size-4" />
-          </Button>
+          <div class="flex justify-end gap-1">
+            <Button variant="ghost" size="icon" :aria-label="t('edit')" @click="requestEdit(row)">
+              <Pencil class="size-4" />
+            </Button>
+            <Button variant="ghost" size="icon" :aria-label="t('delete')" @click="requestDelete(row)">
+              <Trash2 class="size-4" />
+            </Button>
+          </div>
         </template>
         <template v-else>{{ row[column.key] }}</template>
       </template>
@@ -115,10 +153,20 @@ function confirmDelete() {
     <RecordDialog
       v-model:open="createOpen"
       :title="t('newUser')"
-      :fields="createFields"
+      :fields="fields"
       :submit-label="t('create')"
       :cancel-label="t('cancel')"
       @submit="createUser"
+    />
+
+    <RecordDialog
+      v-model:open="editOpen"
+      :title="t('editUser')"
+      :fields="fields"
+      :initial="editInitial"
+      :submit-label="t('save')"
+      :cancel-label="t('cancel')"
+      @submit="updateUser"
     />
   </div>
 </template>

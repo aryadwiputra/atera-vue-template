@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { Plus, Trash2 } from '@lucide/vue'
+import { Plus, Pencil, Trash2 } from '@lucide/vue'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import PageHeader from '@/components/shared/PageHeader.vue'
@@ -19,8 +19,10 @@ const { toast } = useToast()
 const rows = ref<Order[]>(orderService.list())
 const pendingDelete = ref<Order | null>(null)
 const createOpen = ref(false)
+const editOpen = ref(false)
+const editing = ref<Order | null>(null)
 
-const createFields = computed<RecordField[]>(() => [
+const fields = computed<RecordField[]>(() => [
   { key: 'customer', label: t('customer') },
   { key: 'customerEmail', label: t('customerEmail'), type: 'email' },
   { key: 'product', label: t('product') },
@@ -40,6 +42,39 @@ function createOrder(values: Record<string, string>) {
   })
   rows.value = orderService.list()
   toast({ title: t('orderCreated'), variant: 'success' })
+}
+
+const editInitial = computed<Record<string, string>>(() =>
+  editing.value
+    ? {
+        customer: editing.value.customer,
+        customerEmail: editing.value.customerEmail,
+        product: editing.value.product,
+        status: editing.value.status,
+        amount: String(editing.value.amount),
+        date: editing.value.date,
+      }
+    : ({} as Record<string, string>),
+)
+
+function requestEdit(row: Record<string, unknown>) {
+  editing.value = row as unknown as Order
+  editOpen.value = true
+}
+
+function updateOrder(values: Record<string, string>) {
+  if (!editing.value) return
+  orderService.update(editing.value.id, {
+    customer: values.customer,
+    customerEmail: values.customerEmail,
+    product: values.product,
+    status: values.status as OrderStatus,
+    amount: Number(values.amount),
+    date: values.date,
+  })
+  rows.value = orderService.list()
+  editing.value = null
+  toast({ title: t('orderUpdated'), variant: 'success' })
 }
 
 const columns = computed<DataTableColumn[]>(() => [
@@ -95,9 +130,14 @@ function confirmDelete() {
           <span class="font-mono text-xs">{{ row.id }}</span>
         </template>
         <template v-else-if="column.key === 'actions'">
-          <Button variant="ghost" size="icon" :aria-label="t('delete')" @click="requestDelete(row)">
-            <Trash2 class="size-4" />
-          </Button>
+          <div class="flex justify-end gap-1">
+            <Button variant="ghost" size="icon" :aria-label="t('edit')" @click="requestEdit(row)">
+              <Pencil class="size-4" />
+            </Button>
+            <Button variant="ghost" size="icon" :aria-label="t('delete')" @click="requestDelete(row)">
+              <Trash2 class="size-4" />
+            </Button>
+          </div>
         </template>
         <template v-else>{{ row[column.key] }}</template>
       </template>
@@ -116,10 +156,20 @@ function confirmDelete() {
     <RecordDialog
       v-model:open="createOpen"
       :title="t('newOrder')"
-      :fields="createFields"
+      :fields="fields"
       :submit-label="t('create')"
       :cancel-label="t('cancel')"
       @submit="createOrder"
+    />
+
+    <RecordDialog
+      v-model:open="editOpen"
+      :title="t('editOrder')"
+      :fields="fields"
+      :initial="editInitial"
+      :submit-label="t('save')"
+      :cancel-label="t('cancel')"
+      @submit="updateOrder"
     />
   </div>
 </template>

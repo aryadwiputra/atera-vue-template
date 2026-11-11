@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
+import { computed, watch } from 'vue'
+import { useForm } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/zod'
+import { z } from 'zod'
 import {
   Dialog,
   DialogContent,
@@ -33,6 +36,7 @@ const props = withDefaults(
     title: string
     description?: string
     fields: RecordField[]
+    initial?: Record<string, string>
     submitLabel?: string
     cancelLabel?: string
   }>(),
@@ -42,25 +46,54 @@ const props = withDefaults(
 const open = defineModel<boolean>('open', { default: false })
 const emit = defineEmits<{ submit: [values: Record<string, string>] }>()
 
-const values = reactive<Record<string, string>>({})
-
-function reset() {
-  for (const key of Object.keys(values)) delete values[key]
-  for (const field of props.fields) {
-    values[field.key] = field.type === 'select' ? (field.options?.[0] ?? '') : ''
+function fieldSchema(field: RecordField) {
+  const optional = field.required === false
+  if (field.type === 'email') {
+    const base = z.string()
+    return optional
+      ? base.refine((value) => value === '' || z.string().email().safeParse(value).success, 'Enter a valid email address')
+      : base.min(1, 'This field is required').email('Enter a valid email address')
   }
+  if (field.type === 'number') {
+    const numeric = (value: string) => value === '' || (value.trim() !== '' && !Number.isNaN(Number(value)))
+    const base = z.string()
+    return optional
+      ? base.refine(numeric, 'Enter a number')
+      : base.min(1, 'This field is required').refine(numeric, 'Enter a number')
+  }
+  return optional ? z.string() : z.string().min(1, 'This field is required')
 }
 
-watch(open, (isOpen) => {
-  if (isOpen) reset()
+const schema = computed(() =>
+  toTypedSchema(
+    z.object(
+      Object.fromEntries(props.fields.map((field) => [field.key, fieldSchema(field)])) as Record<string, z.ZodTypeAny>,
+    ),
+  ),
+)
+
+function buildValues(): Record<string, string> {
+  const result: Record<string, string> = {}
+  for (const field of props.fields) {
+    const initial = props.initial?.[field.key]
+    result[field.key] = initial ?? (field.type === 'select' ? (field.options?.[0] ?? '') : '')
+  }
+  return result
+}
+
+const { values, errors, handleSubmit, resetForm } = useForm<Record<string, string>>({
+  validationSchema: schema,
+  initialValues: buildValues(),
 })
 
-function onSubmit() {
-  const missing = props.fields.some((field) => field.required !== false && !values[field.key])
-  if (missing) return
-  emit('submit', { ...values })
+watch(open, (isOpen) => {
+  if (isOpen) resetForm({ values: buildValues() })
+})
+
+const onSubmit = handleSubmit((formValues) => {
+  emit('submit', { ...formValues })
   open.value = false
-}
+})
 </script>
 
 <template>
@@ -76,7 +109,7 @@ function onSubmit() {
           <Label :for="field.key" class="text-sm font-medium">{{ field.label }}</Label>
 
           <Select v-if="field.type === 'select'" v-model="values[field.key]">
-            <SelectTrigger :id="field.key" class="w-full">
+            <SelectTrigger :id="field.key" class="w-full" :aria-invalid="Boolean(errors[field.key])">
               <SelectValue :placeholder="field.placeholder ?? field.label" />
             </SelectTrigger>
             <SelectContent>
@@ -92,8 +125,10 @@ function onSubmit() {
             v-model="values[field.key]"
             :type="field.type ?? 'text'"
             :placeholder="field.placeholder"
-            :required="field.required !== false"
+            :aria-invalid="Boolean(errors[field.key])"
           />
+
+          <p v-if="errors[field.key]" class="text-xs text-destructive">{{ errors[field.key] }}</p>
         </div>
 
         <DialogFooter class="mt-2">
