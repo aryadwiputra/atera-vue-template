@@ -81,7 +81,7 @@ function buildValues(): Record<string, string> {
   return result
 }
 
-const { values, errors, handleSubmit, resetForm } = useForm<Record<string, string>>({
+const { values, errors, handleSubmit, resetForm, setFieldValue } = useForm<Record<string, string>>({
   validationSchema: schema,
   initialValues: buildValues(),
 })
@@ -108,7 +108,11 @@ const onSubmit = handleSubmit((formValues) => {
         <div v-for="field in fields" :key="field.key" class="flex flex-col gap-2">
           <Label :for="field.key" class="text-sm font-medium">{{ field.label }}</Label>
 
-          <Select v-if="field.type === 'select'" v-model="values[field.key]">
+          <Select
+            v-if="field.type === 'select'"
+            :model-value="values[field.key]"
+            @update:model-value="(value) => setFieldValue(field.key, String(value ?? ''))"
+          >
             <SelectTrigger :id="field.key" class="w-full" :aria-invalid="Boolean(errors[field.key])">
               <SelectValue :placeholder="field.placeholder ?? field.label" />
             </SelectTrigger>
@@ -122,8 +126,9 @@ const onSubmit = handleSubmit((formValues) => {
           <Input
             v-else
             :id="field.key"
-            v-model="values[field.key]"
+            :model-value="values[field.key]"
             :type="field.type ?? 'text'"
+            @update:model-value="(value) => setFieldValue(field.key, String(value ?? ''))"
             :placeholder="field.placeholder"
             :aria-invalid="Boolean(errors[field.key])"
           />
