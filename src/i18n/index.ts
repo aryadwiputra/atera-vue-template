@@ -87,6 +87,9 @@ export const translations = {
     loading: 'Loading',
     documentation: 'Documentation',
     openDocs: 'Open docs',
+    back: 'Back',
+    notFound: 'Not found',
+    notFoundDescription: 'We could not find the item you are looking for.',
 
     // Orders
     ordersDescription: 'Review and manage customer orders',
@@ -493,6 +496,9 @@ export const translations = {
     loading: 'Wird geladen',
     documentation: 'Dokumentation',
     openDocs: 'Dokumentation öffnen',
+    back: 'Zurück',
+    notFound: 'Nicht gefunden',
+    notFoundDescription: 'Der gesuchte Eintrag konnte nicht gefunden werden.',
 
     ordersDescription: 'Kundenbestellungen prüfen und verwalten',
     newOrder: 'Neue Bestellung',
@@ -894,6 +900,9 @@ export const translations = {
     loading: 'Chargement',
     documentation: 'Documentation',
     openDocs: 'Ouvrir la documentation',
+    back: 'Retour',
+    notFound: 'Introuvable',
+    notFoundDescription: "L'élément recherché est introuvable.",
 
     ordersDescription: 'Consultez et gérez les commandes clients',
     newOrder: 'Nouvelle commande',

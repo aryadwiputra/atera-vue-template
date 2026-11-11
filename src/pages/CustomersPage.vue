@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { Plus, Pencil, Trash2, Users, ShoppingCart, Wallet } from '@lucide/vue'
+import { Eye, Plus, Pencil, Trash2, Users, ShoppingCart, Wallet } from '@lucide/vue'
 import { Button } from '@/components/ui/button'
 import PageHeader from '@/components/shared/PageHeader.vue'
 import StatCard from '@/components/shared/StatCard.vue'
@@ -131,6 +131,11 @@ function confirmDelete() {
         </template>
         <template v-else-if="column.key === 'actions'">
           <div class="flex justify-end gap-1">
+            <Button variant="ghost" size="icon" as-child :aria-label="t('view')">
+              <RouterLink :to="`/customers/${row.id}`">
+                <Eye class="size-4" />
+              </RouterLink>
+            </Button>
             <Button variant="ghost" size="icon" :aria-label="t('edit')" @click="requestEdit(row)">
               <Pencil class="size-4" />
             </Button>
