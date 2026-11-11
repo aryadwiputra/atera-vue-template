@@ -48,6 +48,7 @@ const router = createRouter({
           component: () => import('@/pages/SuppliersPage.vue'),
         },
         { path: 'hr', name: 'hr', component: () => import('@/pages/HRPage.vue') },
+        { path: 'mail', name: 'mail', component: () => import('@/pages/MailPage.vue') },
       ],
     },
     {

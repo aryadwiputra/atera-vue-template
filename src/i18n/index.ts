@@ -291,6 +291,20 @@ export const translations = {
     employeeSaved: 'Employee saved',
     saveChanges: 'Save changes',
     filterTransactions: 'Filter transactions...',
+
+    // Mail
+    mailDescription: 'Read, search and send messages.',
+    compose: 'Compose',
+    mailSent: 'Message sent.',
+    to: 'To',
+    subject: 'Subject',
+    subjectPlaceholder: 'What is this about?',
+    message: 'Message',
+    messagePlaceholder: 'Write your message...',
+    send: 'Send',
+    searchMail: 'Search mail',
+    reply: 'Reply',
+    selectEmail: 'Select an email to read',
   },
   de: {
     overview: 'Übersicht',
@@ -574,6 +588,20 @@ export const translations = {
     employeeSaved: 'Mitarbeiter gespeichert',
     saveChanges: 'Änderungen speichern',
     filterTransactions: 'Transaktionen filtern...',
+
+    // Mail
+    mailDescription: 'Nachrichten lesen, durchsuchen und senden.',
+    compose: 'Verfassen',
+    mailSent: 'Nachricht gesendet.',
+    to: 'An',
+    subject: 'Betreff',
+    subjectPlaceholder: 'Worum geht es?',
+    message: 'Nachricht',
+    messagePlaceholder: 'Nachricht schreiben...',
+    send: 'Senden',
+    searchMail: 'Mail durchsuchen',
+    reply: 'Antworten',
+    selectEmail: 'E-Mail zum Lesen auswählen',
   },
   fr: {
     overview: 'Vue d\'ensemble',
@@ -857,6 +885,20 @@ export const translations = {
     employeeSaved: 'Employé enregistré',
     saveChanges: 'Enregistrer',
     filterTransactions: 'Filtrer les transactions...',
+
+    // Mail
+    mailDescription: 'Lire, rechercher et envoyer des messages.',
+    compose: 'Rédiger',
+    mailSent: 'Message envoyé.',
+    to: 'À',
+    subject: 'Objet',
+    subjectPlaceholder: 'De quoi s’agit-il ?',
+    message: 'Message',
+    messagePlaceholder: 'Écrivez votre message...',
+    send: 'Envoyer',
+    searchMail: 'Rechercher dans les mails',
+    reply: 'Répondre',
+    selectEmail: 'Sélectionnez un e-mail à lire',
   },
 } as const
 
