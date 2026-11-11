@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
-import { LogOut, Menu, Moon, Sun, X } from '@lucide/vue'
+import { LogOut, Menu, Moon, Search, Sun, X } from '@lucide/vue'
 import { Button } from '@/components/ui/button'
 import { navigationGroups, navigationItems } from '@/lib/navigation'
 import type { NavigationGroup } from '@/lib/navigation'
@@ -28,6 +28,27 @@ const groupedNav = computed(() =>
 function isActive(href: string) {
   return route.path === href || route.path.startsWith(href + '/')
 }
+
+const pageTitle = computed(() => {
+  const match = [...navigationItems]
+    .sort((a, b) => b.href.length - a.href.length)
+    .find((item) => route.path === item.href || route.path.startsWith(item.href + '/'))
+  return match ? (t(match.translationKey) as string) : (t('dashboard') as string)
+})
+
+function openSearch() {
+  router.push('/search')
+}
+
+function onKeydown(event: KeyboardEvent) {
+  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+    event.preventDefault()
+    openSearch()
+  }
+}
+
+onMounted(() => window.addEventListener('keydown', onKeydown))
+onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 
 function signOut() {
   auth.signOut()
@@ -81,9 +102,28 @@ function signOut() {
           <Button variant="ghost" size="icon" class="lg:hidden" @click="mobileOpen = true">
             <Menu class="size-4" />
           </Button>
-          <span class="text-sm font-medium">{{ t('dashboard') }}</span>
+          <span class="text-sm font-medium">{{ pageTitle }}</span>
         </div>
         <div class="flex items-center gap-1">
+          <Button
+            variant="outline"
+            size="sm"
+            class="hidden gap-2 text-muted-foreground sm:inline-flex"
+            @click="openSearch"
+          >
+            <Search class="size-4" />
+            <span>{{ t('search') }}</span>
+            <kbd class="rounded border bg-muted px-1.5 font-mono text-2xs">⌘K</kbd>
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            class="sm:hidden"
+            :aria-label="t('search')"
+            @click="openSearch"
+          >
+            <Search class="size-4" />
+          </Button>
           <Button variant="ghost" size="icon" :aria-label="t('toggleTheme')" @click="prefs.toggleAppearance">
             <Sun v-if="prefs.resolvedAppearance === 'dark'" class="size-4" />
             <Moon v-else class="size-4" />
