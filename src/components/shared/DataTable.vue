@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { ChevronDown, ChevronUp, ChevronsUpDown, ListX, Search } from '@lucide/vue'
+import { ChevronDown, ChevronUp, ChevronsUpDown, Download, ListX, Search, SlidersHorizontal } from '@lucide/vue'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -12,7 +12,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import EmptyState from '@/components/shared/EmptyState.vue'
+import { useTranslations } from '@/i18n'
 
 export interface DataTableColumn {
   key: string
@@ -37,11 +46,28 @@ const props = withDefaults(
   },
 )
 
+const t = useTranslations()
 const filter = ref('')
 const page = ref(1)
 const pageSize = ref(10)
 const sort = ref<{ key: string; direction: 'asc' | 'desc' } | null>(null)
 const selected = ref<Set<string>>(new Set())
+const visible = ref<Record<string, boolean>>(
+  Object.fromEntries(props.columns.map((column) => [column.key, true])),
+)
+
+watch(
+  () => props.columns,
+  (columns) => {
+    const next = { ...visible.value }
+    columns.forEach((column) => {
+      if (!(column.key in next)) next[column.key] = true
+    })
+    visible.value = next
+  },
+)
+
+const visibleColumns = computed(() => props.columns.filter((column) => visible.value[column.key] !== false))
 
 const filtered = computed(() => {
   const query = filter.value.trim().toLowerCase()
@@ -133,6 +159,23 @@ function clearFilter() {
   filter.value = ''
 }
 
+function exportCsv() {
+  const header = visibleColumns.value.map((column) => column.header)
+  const rows = filtered.value.map((row) =>
+    visibleColumns.value.map((column) => {
+      const value = cellValue(row, column.key)
+      return /[",\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value
+    }),
+  )
+  const csv = [header, ...rows].map((line) => line.join(',')).join('\n')
+  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }))
+  const link = document.createElement('a')
+  link.href = url
+  link.download = 'export.csv'
+  link.click()
+  URL.revokeObjectURL(url)
+}
+
 defineExpose({ clearSelection: () => (selected.value = new Set()) })
 </script>
 
@@ -145,9 +188,33 @@ defineExpose({ clearSelection: () => (selected.value = new Set()) })
           <Input v-model="filter" :placeholder="filterPlaceholder" class="pl-9" />
         </div>
         <div class="flex items-center gap-2 text-xs text-muted-foreground">
-          <span v-if="selected.size">{{ selected.size }} selected</span>
-          <span v-else>{{ filtered.length }} results</span>
-          <Button v-if="filter" variant="ghost" size="sm" @click="clearFilter">Clear</Button>
+          <span v-if="selected.size">{{ selected.size }} {{ t('selected') }}</span>
+          <span v-else>{{ filtered.length }} {{ t('results') }}</span>
+          <Button v-if="filter" variant="ghost" size="sm" @click="clearFilter">{{ t('clear') }}</Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger as-child>
+              <Button variant="outline" size="sm">
+                <SlidersHorizontal class="size-4" />
+                {{ t('columns') }}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" class="w-44">
+              <DropdownMenuLabel>{{ t('columns') }}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem
+                v-for="column in columns"
+                :key="column.key"
+                :model-value="visible[column.key] !== false"
+                @update:model-value="(value) => (visible[column.key] = value === true)"
+              >
+                {{ column.header }}
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button variant="outline" size="sm" @click="exportCsv">
+            <Download class="size-4" />
+            {{ t('export') }}
+          </Button>
         </div>
       </div>
 
@@ -159,7 +226,7 @@ defineExpose({ clearSelection: () => (selected.value = new Set()) })
                 <Checkbox :model-value="allVisibleSelected" @update:model-value="toggleAll" />
               </th>
               <th
-                v-for="column in columns"
+                v-for="column in visibleColumns"
                 :key="column.key"
                 :class="['px-4 py-3 text-xs font-medium text-muted-foreground', column.align === 'right' ? 'text-right' : 'text-left']"
               >
@@ -180,9 +247,9 @@ defineExpose({ clearSelection: () => (selected.value = new Set()) })
           </thead>
           <tbody>
             <tr v-if="pageData.length === 0">
-              <td :colspan="columns.length + 1">
+              <td :colspan="visibleColumns.length + 1">
                 <EmptyState :icon="ListX" :title="emptyTitle">
-                  <Button v-if="filter" variant="outline" size="sm" @click="clearFilter">Clear</Button>
+                  <Button v-if="filter" variant="outline" size="sm" @click="clearFilter">{{ t('clear') }}</Button>
                 </EmptyState>
               </td>
             </tr>
@@ -198,7 +265,7 @@ defineExpose({ clearSelection: () => (selected.value = new Set()) })
                 />
               </td>
               <td
-                v-for="column in columns"
+                v-for="column in visibleColumns"
                 :key="column.key"
                 :class="['px-4 py-3', column.align === 'right' ? 'text-right' : 'text-left', column.class]"
               >
@@ -222,7 +289,7 @@ defineExpose({ clearSelection: () => (selected.value = new Set()) })
         >
           <slot name="mobile-card" :row="row">
             <dl class="grid grid-cols-2 gap-2 text-sm">
-              <template v-for="column in columns" :key="column.key">
+              <template v-for="column in visibleColumns" :key="column.key">
                 <dt class="text-xs text-muted-foreground">{{ column.header }}</dt>
                 <dd class="text-right">{{ cellValue(row, column.key) }}</dd>
               </template>
@@ -233,7 +300,7 @@ defineExpose({ clearSelection: () => (selected.value = new Set()) })
 
       <div class="flex items-center justify-between gap-3 border-t px-4 py-3 text-xs text-muted-foreground">
         <div class="flex items-center gap-2">
-          <span>Rows per page</span>
+          <span>{{ t('rowsPerPage') }}</span>
           <Select v-model="pageSize">
             <SelectTrigger class="h-8 w-16">
               <SelectValue />
@@ -249,8 +316,8 @@ defineExpose({ clearSelection: () => (selected.value = new Set()) })
           <span>
             {{ filtered.length === 0 ? 0 : (page - 1) * pageSize + 1 }}-{{ Math.min(page * pageSize, filtered.length) }} of {{ filtered.length }}
           </span>
-          <Button variant="outline" size="sm" :disabled="page <= 1" @click="page--">Previous</Button>
-          <Button variant="outline" size="sm" :disabled="page >= pageCount" @click="page++">Next</Button>
+          <Button variant="outline" size="sm" :disabled="page <= 1" @click="page--">{{ t('previous') }}</Button>
+          <Button variant="outline" size="sm" :disabled="page >= pageCount" @click="page++">{{ t('next') }}</Button>
         </div>
       </div>
     </CardContent>
