@@ -1,0 +1,56 @@
+import { createRouter, createWebHistory } from 'vue-router'
+import { getSession } from '@/lib/auth'
+import ProtectedLayout from '@/layouts/ProtectedLayout.vue'
+import AuthLayout from '@/layouts/AuthLayout.vue'
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    {
+      path: '/',
+      component: AuthLayout,
+      children: [
+        { path: '', redirect: '/login' },
+        { path: 'login', name: 'login', component: () => import('@/pages/LoginPage.vue') },
+        { path: 'sign-in', redirect: '/login' },
+        { path: 'sign-up', name: 'sign-up', component: () => import('@/pages/SignUpPage.vue') },
+      ],
+    },
+    {
+      path: '/',
+      component: ProtectedLayout,
+      meta: { requiresAuth: true },
+      children: [
+        {
+          path: 'dashboard',
+          name: 'dashboard',
+          component: () => import('@/pages/DashboardPage.vue'),
+        },
+        { path: 'orders', name: 'orders', component: () => import('@/pages/OrdersPage.vue') },
+        { path: 'products', name: 'products', component: () => import('@/pages/ProductsPage.vue') },
+        { path: 'users', name: 'users', component: () => import('@/pages/UsersPage.vue') },
+      ],
+    },
+    {
+      path: '/docs',
+      name: 'docs',
+      component: () => import('@/pages/DocsPage.vue'),
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/dashboard',
+    },
+  ],
+})
+
+router.beforeEach((to) => {
+  if (to.meta.requiresAuth && !getSession()) {
+    return { path: '/login' }
+  }
+  if (to.path === '/login' && getSession()) {
+    return { path: '/dashboard' }
+  }
+  return true
+})
+
+export default router
