@@ -1,23 +1,21 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
-import { LogOut, Menu, Moon, Search, Sun, X } from '@lucide/vue'
-import { Button } from '@/components/ui/button'
+import { computed } from 'vue'
+import { RouterLink, RouterView, useRoute } from 'vue-router'
+import AppSidebar from '@/components/AppSidebar.vue'
+import AppSidebarHeader from '@/components/AppSidebarHeader.vue'
+import { provideSidebar } from '@/components/sidebar-context'
 import { navigationGroups, navigationItems } from '@/lib/navigation'
 import type { NavigationGroup } from '@/lib/navigation'
-import { useAuthStore } from '@/stores/auth'
 import { usePreferencesStore } from '@/stores/preferences'
 import { useTranslations } from '@/i18n'
 
 const route = useRoute()
-const router = useRouter()
-const auth = useAuthStore()
 const prefs = usePreferencesStore()
 const t = useTranslations()
 
-const mobileOpen = ref(false)
+provideSidebar()
 
-const groupedNav = computed(() =>
+const horizontalGroups = computed(() =>
   navigationGroups.map((group) => ({
     group,
     label: t(group as NavigationGroup) as string,
@@ -28,159 +26,61 @@ const groupedNav = computed(() =>
 function isActive(href: string) {
   return route.path === href || route.path.startsWith(href + '/')
 }
-
-const pageTitle = computed(() => {
-  const match = [...navigationItems]
-    .sort((a, b) => b.href.length - a.href.length)
-    .find((item) => route.path === item.href || route.path.startsWith(item.href + '/'))
-  return match ? (t(match.translationKey) as string) : (t('dashboard') as string)
-})
-
-function openSearch() {
-  router.push('/search')
-}
-
-function onKeydown(event: KeyboardEvent) {
-  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-    event.preventDefault()
-    openSearch()
-  }
-}
-
-onMounted(() => window.addEventListener('keydown', onKeydown))
-onUnmounted(() => window.removeEventListener('keydown', onKeydown))
-
-function signOut() {
-  auth.signOut()
-  router.push('/login')
-}
 </script>
 
 <template>
-  <div class="flex min-h-svh bg-background text-foreground">
-    <aside class="hidden w-64 shrink-0 border-r lg:block">
-      <div class="flex h-full flex-col">
-        <div class="border-b px-4 py-4">
-          <RouterLink to="/dashboard" class="text-sm font-semibold">Atera</RouterLink>
-          <p class="text-xs text-muted-foreground">Dashboard</p>
+  <div
+    v-if="prefs.layout === 'top-nav'"
+    class="flex min-h-svh w-full flex-col bg-background text-foreground"
+  >
+    <AppSidebarHeader variant="top-nav" />
+    <nav class="overflow-x-auto border-b bg-sidebar text-sidebar-foreground">
+      <div class="flex w-max items-center gap-4 px-4 py-2 md:px-6">
+        <div
+          v-for="section in horizontalGroups"
+          :key="section.group"
+          class="flex items-center gap-2"
+        >
+          <span class="shrink-0 text-2xs font-medium tracking-[0.12em] text-sidebar-foreground/45 uppercase">
+            {{ section.label }}
+          </span>
+          <RouterLink
+            v-for="item in section.items"
+            :key="item.href"
+            :to="item.href"
+            class="flex shrink-0 items-center gap-1.5 rounded-md px-2 py-1.5 text-xs leading-5 text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            :class="
+              isActive(item.href)
+                ? 'bg-sidebar-accent font-medium text-sidebar-accent-foreground'
+                : ''
+            "
+          >
+            <component :is="item.icon" class="size-4 shrink-0" />
+            {{ t(item.translationKey) }}
+          </RouterLink>
         </div>
-        <nav class="flex-1 space-y-6 overflow-y-auto px-3 py-4">
-          <div v-for="section in groupedNav" :key="section.group">
-            <p class="px-2 pb-1 text-2xs font-medium uppercase tracking-wide text-muted-foreground">
-              {{ section.label }}
-            </p>
-            <ul class="flex flex-col gap-0.5">
-              <li v-for="item in section.items" :key="item.href">
-                <RouterLink
-                  :to="item.href"
-                  class="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors"
-                  :class="
-                    isActive(item.href)
-                      ? 'bg-accent font-medium text-accent-foreground'
-                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                  "
-                >
-                  <component :is="item.icon" class="size-4 shrink-0" />
-                  <span class="truncate">{{ t(item.translationKey) }}</span>
-                  <span
-                    v-if="item.badge"
-                    class="ml-auto rounded-full bg-primary px-1.5 text-2xs text-primary-foreground"
-                  >
-                    {{ item.badge }}
-                  </span>
-                </RouterLink>
-              </li>
-            </ul>
-          </div>
-        </nav>
       </div>
-    </aside>
+    </nav>
+    <main class="flex min-w-0 flex-1 flex-col p-4 md:p-6">
+      <RouterView v-slot="{ Component }">
+        <Transition name="page-fade" mode="out-in">
+          <component :is="Component" :key="route.path" />
+        </Transition>
+      </RouterView>
+    </main>
+  </div>
 
-    <div class="flex min-w-0 flex-1 flex-col">
-      <header class="flex items-center justify-between gap-3 border-b px-4 py-2.5">
-        <div class="flex items-center gap-2">
-          <Button variant="ghost" size="icon" class="lg:hidden" @click="mobileOpen = true">
-            <Menu class="size-4" />
-          </Button>
-          <span class="text-sm font-medium">{{ pageTitle }}</span>
-        </div>
-        <div class="flex items-center gap-1">
-          <Button
-            variant="outline"
-            size="sm"
-            class="hidden gap-2 text-muted-foreground sm:inline-flex"
-            @click="openSearch"
-          >
-            <Search class="size-4" />
-            <span>{{ t('search') }}</span>
-            <kbd class="rounded border bg-muted px-1.5 font-mono text-2xs">⌘K</kbd>
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            class="sm:hidden"
-            :aria-label="t('search')"
-            @click="openSearch"
-          >
-            <Search class="size-4" />
-          </Button>
-          <Button variant="ghost" size="icon" :aria-label="t('toggleTheme')" @click="prefs.toggleAppearance">
-            <Sun v-if="prefs.resolvedAppearance === 'dark'" class="size-4" />
-            <Moon v-else class="size-4" />
-          </Button>
-          <div class="hidden text-right text-xs sm:block">
-            <p class="font-medium">{{ auth.session?.name }}</p>
-            <p class="text-muted-foreground">{{ auth.session?.email }}</p>
-          </div>
-          <Button variant="ghost" size="icon" :aria-label="t('signOut')" @click="signOut">
-            <LogOut class="size-4" />
-          </Button>
-        </div>
-      </header>
-
-      <main class="flex-1 p-4 md:p-6">
+  <div v-else class="flex min-h-svh w-full flex-col bg-background text-foreground">
+    <AppSidebarHeader variant="sidebar" />
+    <div class="flex min-h-0 min-w-0 flex-1">
+      <AppSidebar />
+      <main class="flex min-w-0 flex-1 flex-col overflow-x-clip p-4 md:p-6">
         <RouterView v-slot="{ Component }">
           <Transition name="page-fade" mode="out-in">
             <component :is="Component" :key="route.path" />
           </Transition>
         </RouterView>
       </main>
-    </div>
-
-    <div
-      v-if="mobileOpen"
-      class="fixed inset-0 z-50 lg:hidden"
-      @click.self="mobileOpen = false"
-    >
-      <div class="absolute inset-0 bg-black/40" />
-      <aside class="absolute inset-y-0 left-0 w-64 overflow-y-auto border-r bg-background p-3">
-        <div class="flex items-center justify-between px-2 py-2">
-          <span class="text-sm font-semibold">Atera</span>
-          <Button variant="ghost" size="icon" @click="mobileOpen = false">
-            <X class="size-4" />
-          </Button>
-        </div>
-        <div v-for="section in groupedNav" :key="section.group" class="mt-4">
-          <p class="px-2 pb-1 text-2xs font-medium uppercase tracking-wide text-muted-foreground">
-            {{ section.label }}
-          </p>
-          <RouterLink
-            v-for="item in section.items"
-            :key="item.href"
-            :to="item.href"
-            class="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm"
-            :class="
-              isActive(item.href)
-                ? 'bg-accent font-medium text-accent-foreground'
-                : 'text-muted-foreground hover:bg-muted'
-            "
-            @click="mobileOpen = false"
-          >
-            <component :is="item.icon" class="size-4 shrink-0" />
-            {{ t(item.translationKey) }}
-          </RouterLink>
-        </div>
-      </aside>
     </div>
   </div>
 </template>

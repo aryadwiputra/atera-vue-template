@@ -7,6 +7,7 @@ export type Appearance = 'light' | 'dark' | 'system'
 export type ColorPreset = 'zinc' | 'blue' | 'violet' | 'rose' | 'orange'
 export type Density = 'compact' | 'comfortable' | 'spacious'
 export type Container = 'fluid' | 'boxed'
+export type Layout = 'sidebar' | 'top-nav'
 
 const appearanceKey = 'atera_appearance'
 const preferencesKey = 'atera_preferences'
@@ -16,6 +17,7 @@ interface PersistedPreferences {
   color: ColorPreset
   density: Density
   container: Container
+  layout: Layout
 }
 
 function readPreferences(): Partial<PersistedPreferences> {
@@ -53,6 +55,7 @@ export const usePreferencesStore = defineStore('preferences', () => {
     stored.density && densities.includes(stored.density) ? stored.density : 'comfortable',
   )
   const container = ref<Container>(stored.container === 'boxed' ? 'boxed' : 'fluid')
+  const layout = ref<Layout>(stored.layout === 'top-nav' ? 'top-nav' : 'sidebar')
 
   const resolvedAppearance = computed<'light' | 'dark'>(() => {
     if (appearance.value !== 'system') return appearance.value
@@ -89,11 +92,12 @@ export const usePreferencesStore = defineStore('preferences', () => {
         color: color.value,
         density: density.value,
         container: container.value,
+        layout: layout.value,
       }),
     )
   }
 
-  watch([language, color, density, container], () => {
+  watch([language, color, density, container, layout], () => {
     persist()
     apply()
   })
@@ -110,6 +114,7 @@ export const usePreferencesStore = defineStore('preferences', () => {
     color,
     density,
     container,
+    layout,
     resolvedAppearance,
     setAppearance,
     toggleAppearance,
