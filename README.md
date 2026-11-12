@@ -1,6 +1,22 @@
 # Atera (Vue)
 
+[![Vue](https://img.shields.io/badge/Vue-3.5-4FC08D?logo=vuedotjs&logoColor=white)](https://vite.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vite.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Bun](https://img.shields.io/badge/Bun-runtime-000?logo=bun&logoColor=white)](https://bun.sh)
+
 A Vue 3 admin dashboard template built with Vite, TypeScript, Tailwind CSS v4 and shadcn-vue. Routes, UI primitives, typed sample data and a thin service layer ship together, so every page opens on real rows instead of an empty shell.
+
+## Screenshots
+
+| Dashboard | Dark mode |
+|:---:|:---:|
+| ![Dashboard](docs/screenshots/dashboard.png) | ![Dashboard dark](docs/screenshots/dashboard-dark.png) |
+
+| Orders | Landing |
+|:---:|:---:|
+| ![Orders](docs/screenshots/orders.png) | ![Landing](docs/screenshots/landing.png) |
 
 ## Stack
 
@@ -48,6 +64,8 @@ src/
 - Auth flow with a demo account, plus forgot/reset password, two-factor, verify email and lock screen
 - Legal, 404/403/500, coming soon and maintenance pages
 - Full CRUD on orders, products, users, customers, invoices, assets and suppliers with validated dialogs and toasts
+- Searchable, sortable, paginated data table with column visibility and CSV export
+- Global search (Ctrl/⌘ + K), page transitions and scroll restoration
 
 ## Data flow
 
